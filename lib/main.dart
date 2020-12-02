@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:webapp/admin.dart';
+import 'package:webapp/User.dart';
 import 'package:webapp/admin_page.dart';
-import 'package:webapp/form.dart';
-import 'package:webapp/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:webapp/multi_form.dart';
+import 'package:webapp/login_page.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AdminPage()
+      home: UserPage()
     );
   }
 }
