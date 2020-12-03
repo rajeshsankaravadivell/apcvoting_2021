@@ -24,7 +24,7 @@ class UserManagement {
   }
 
   StoreNewUser(user,context){
-    Firestore.instance.collection('/users').add({
+    Firestore.instance.collection('/apc-users').add({
       'email' : FirebaseAuth.instance.currentUser.email,
       'uid' : FirebaseAuth.instance.currentUser.uid,
       'role' : 'Admin',
@@ -36,9 +36,9 @@ class UserManagement {
     });
   }
 
-  authorizeAccess(BuildContext context){
-    FirebaseAuth.instance.currentUser;{
-      Firestore.instance.collection('/users').where('email',isEqualTo: FirebaseAuth.instance.currentUser.email).getDocuments().then((docs){
+  Future authorizeAccess(BuildContext context) async{
+    await FirebaseAuth.instance.currentUser;{
+     await Firestore.instance.collection('/apc-users').where('email',isEqualTo: FirebaseAuth.instance.currentUser.email).getDocuments().then((docs){
         if(docs.documents[0].exists){
           if( docs.documents[0].get('role')=='Admin'){
             Navigator.push(

@@ -1,6 +1,8 @@
 
 import 'dart:math';
+import 'package:webapp/User.dart';
 
+import 'admin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -20,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   var passwordkey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
   String email;
-  String otp;
+  String password;
   bool showSpinner = false;
   @override
   Widget build(BuildContext context) {
@@ -122,44 +124,44 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          // Form(
-                          //   key: passwordkey,
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.symmetric(horizontal: 90),
-                          //     child: TextFormField(
-                          //       validator: (String value) {
-                          //         if (value.length < 5)
-                          //           return " Enter at least 8 character from your email";
-                          //         else
-                          //           return null;
-                          //       },
-                          //       controller: passwordController,
-                          //       onChanged: (value) {
-                          //         otp = value;
-                          //       },
-                          //       keyboardType: TextInputType.emailAddress,
-                          //       decoration: InputDecoration(
-                          //           border: OutlineInputBorder(
-                          //             borderRadius: BorderRadius.all(
-                          //               Radius.circular(32),
-                          //             ),
-                          //           ),
-                          //           enabledBorder: OutlineInputBorder(
-                          //             borderRadius: BorderRadius.all(
-                          //               Radius.circular(32),
-                          //             ),
-                          //           ),
-                          //           hintText: "OTP",
-                          //           hintStyle: TextStyle(
-                          //             color: Color(0xFF87837e),
-                          //           ),
-                          //           suffixIcon: Icon(Icons.confirmation_num),
-                          //           filled: true,
-                          //           focusColor: Colors.yellow),
-                          //       style: GoogleFonts.lato(color: Colors.black),
-                          //     ),
-                          //   ),
-                          // ),
+                          Form(
+                            key: passwordkey,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 50),
+                              child: TextFormField(
+                                validator: (String value) {
+                                  if (value.length < 5)
+                                    return " Enter at least 8 character from your email";
+                                  else
+                                    return null;
+                                },
+                                controller: passwordController,
+                                onChanged: (value) {
+                                  password = value;
+                                },
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(32),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(32),
+                                      ),
+                                    ),
+                                    hintText: "Password",
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFF87837e),
+                                    ),
+                                    suffixIcon: Icon(Icons.security_outlined),
+                                    filled: true,
+                                    focusColor: Colors.yellow),
+                                style: GoogleFonts.lato(color: Colors.black),
+                              ),
+                            ),
+                          ),
                           SizedBox(height: 10,),
                           Material(
                             elevation: 5.0,
@@ -168,11 +170,21 @@ class _LoginPageState extends State<LoginPage> {
                             child: MaterialButton(
                               onPressed: () async{
                                try{
-                                  await auth.createUserWithEmailAndPassword(email: email, password: null).then((SignedInUser){
-                                   UserManagement().StoreNewUser(SignedInUser, context);
+                                  await auth.createUserWithEmailAndPassword(email: email, password: password).then((SignedInUser) {
+                                  SignedInUser.user.email == 'admin@digisailor.com'|| SignedInUser.user.email == 'venkat@digisailor.com'? MaterialPageRoute(
+                                    builder: (context) =>
+                                        AdminPage1(),
+                                  ) :  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          UserPage(),
+                                    ),
+                                  );
+
                                  });
                                   setState(() {
-                                    showSpinner = true;
+                                    // showSpinner = true;
                                   });
                                }
                                catch (e){
@@ -180,6 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                                }
                                setState(() {
                                  formkey.currentState.validate();
+                                 passwordkey.currentState.validate();
                                });
                             },
                               child: Text(

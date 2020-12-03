@@ -47,21 +47,17 @@ class _UserPageState extends State<UserPage> {
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData) {
-                    return ListView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),
+                    return ListView.builder(shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
                       itemCount: ite.length,
                       itemBuilder: (context, index) {
-                        var data = snapshot.data;
+                        var data = snapshot.data.docs[index];
                         return GridTile(
                             child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              for (var asdf in ite[index]['HEADING']
-                                  .toString()
-                                  .replaceAll('[', '')
-                                  .replaceAll(']', '')
-                                  .split(','))
                                 Text(
-                                  asdf,
+                            data.get('HEADING'),
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
@@ -80,9 +76,10 @@ class _UserPageState extends State<UserPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: FlatButton(color: Colors.blue,
                                     onPressed: (){
+                                     // var indexval = ite[index]['PEOPLES'].indexOf(asd);
                                     print(asd);
-    },
-
+                                    print('${data.get(index)}');
+                                    },
                                     child: Text(
                                       asd,
                                       style: TextStyle(

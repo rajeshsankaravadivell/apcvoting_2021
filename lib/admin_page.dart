@@ -591,14 +591,14 @@ class _AdminPage1State extends State<AdminPage1> {
                                 print('Total : ${total.toString()}');
                                 _peoples.clear();
                                 people.clear();
-                                title.clear();
                                 setState(() {
                                   name = null;
                                 });
                                 await _firestore.collection('APC-VOTING').add({
-                                  'HEADING' : _title,
+                                  'HEADING' : title.text,
                                   'PEOPLES' : total,
                                 });
+                                title.clear();
                                 Navigator.of(context).pop();
                               },
                               child: Text('Submit'),
