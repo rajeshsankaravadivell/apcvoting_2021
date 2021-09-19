@@ -420,13 +420,358 @@
 //try this
 
 
+// import 'dart:io';
+// import 'package:flutter/material.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:webapp/result.dart';
+// import 'package:webapp/user_management.dart';
+//
+// final _firestore = FirebaseFirestore.instance;
+//
+// class AdminPage1 extends StatefulWidget {
+//   @override
+//   _AdminPage1State createState() => _AdminPage1State();
+// }
+//
+// class _AdminPage1State extends State<AdminPage1> {
+//   List<String> _peoples = List();
+//   List<Widget> people = List();
+//   List<String> total = List();
+//   List<String> totaldescription = List();
+//   List<String> _title = List();
+//   List<String> _descriptions = List();
+//   List<Widget> description = List();
+//   bool result = true;
+//   List <File> _image = [];
+//   final picker = ImagePicker();
+//   var item;
+//   var descriptionItems;
+//   TextEditingController title = TextEditingController();
+//   String name;
+//   String Description;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SafeArea(
+//       child: Scaffold(
+//           backgroundColor: Colors.grey[200],
+//           floatingActionButton: FloatingActionButton(
+//             backgroundColor: Colors.pink,
+//             onPressed: () {
+//               onpressed();
+//             },
+//             child: Icon(Icons.add),
+//           ),
+//           body:result ? Center(
+//             child: FlatButton(
+//               color: Colors.pink,
+//               onPressed: (){
+//                 Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                     builder: (context) =>
+//                         Result(),
+//                   ),
+//                 );
+//               },
+//               child: Text('View Result'),
+//             ),
+//           ) :  GridView.builder(
+//               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                 crossAxisCount: 4,
+//               ),
+//               itemCount: total.length,
+//               itemBuilder: (context, index) {
+//                 print('Total : $item');
+//                 return Padding(
+//                   padding: const EdgeInsets.all(8.0),
+//                   child: Container(
+//                     decoration: BoxDecoration(
+//                       borderRadius: BorderRadius.circular(30),
+//                       color: Color(0xFFFDF5E6),
+//                     ),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Center(
+//                           child: Text(_title[index],
+//                               style: Theme.of(context).textTheme.headline6),
+//                         ),
+//                         for (item in total[index]
+//                             .replaceAll('[', '')
+//                             .replaceAll('[', '')
+//                             .replaceAll(']', '')
+//                             .replaceAll('[', '')
+//                             .replaceAll(']', '')
+//                             .split(','))
+//                           Padding(
+//                               padding: const EdgeInsets.all(8.0),
+//                               child: Column(
+//                                 children: [
+//                                   Text(
+//                               '(${total.length +1}) $item',
+//                                     style:
+//                                     Theme.of(context).textTheme.subtitle1,
+//                                   ),
+//                                 ],
+//                               )),
+//                         for (descriptionItems in totaldescription[index]
+//                             .replaceAll('[', '')
+//                             .replaceAll('[', '')
+//                             .replaceAll(']', '')
+//                             .replaceAll('[', '')
+//                             .replaceAll(']', '')
+//                             .split(','))
+//                           Padding(
+//                               padding: const EdgeInsets.all(8.0),
+//                               child: Column(
+//                                 children: [
+//                                   Text(
+//                                     '( des :  $descriptionItems',
+//                                     style:
+//                                     Theme.of(context).textTheme.subtitle1,
+//                                   ),
+//                                 ],
+//                               )),
+//                       ],
+//                     ),
+//                   ),
+//                 );
+//               }),
+//       ),
+//     );
+//   }
+//
+//   onpressed() {
+//     showModalBottomSheet<dynamic>(
+//         isScrollControlled: true,
+//         context: context,
+//         backgroundColor: Colors.transparent,
+//         builder: (context) {
+//           return Container(
+//             height: MediaQuery.of(context).size.height * 0.80,
+//             decoration: new BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: new BorderRadius.only(
+//                 topLeft: const Radius.circular(25.0),
+//                 topRight: const Radius.circular(25.0),
+//               ),
+//             ),
+//             child: StatefulBuilder(
+//                 builder: (BuildContext context, StateSetter stateSetter) {
+//                   return Padding(
+//                     padding: const EdgeInsets.all(8.0),
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Center(
+//                           child: Padding(
+//                             padding: const EdgeInsets.all(12.0),
+//                             child: Text(
+//                               "Enter Required data",
+//                               style: TextStyle(
+//                                 fontSize: 18.0,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                               maxLines: 1,
+//                             ),
+//                           ),
+//                         ),
+//                         Padding(
+//                           padding: const EdgeInsets.all(8.0),
+//                           child: TextFormField(
+//                             controller: title,
+//                             decoration: InputDecoration(
+//                                 border: OutlineInputBorder(
+//                                     borderRadius: BorderRadius.circular(12.0)),
+//                                 hintText: 'Title'),
+//                           ),
+//                         ),
+//                         Expanded(
+//                           child: ListView.builder(
+//                             shrinkWrap: true,
+//                             itemBuilder: (context, index) {
+//                               Widget widget = people.elementAt(index);
+//                               return Row(
+//                                 children: [
+//                                   widget,
+//                                   IconButton(
+//                                       icon: Icon(
+//                                         Icons.close,
+//                                       ),
+//                                       onPressed: () {
+//                                         deleted(stateSetter, index);
+//                                       }),
+//                                   IconButton(
+//                                     icon: Icon(Icons.image),
+//                                     onPressed: (){
+//                                       ChooseImage();
+//                                     },
+//                                   )
+//                                 ],
+//                               );
+//                             },
+//                             itemCount: people.length,
+//                           ),
+//                         ),
+//                         Padding(
+//                           padding: const EdgeInsets.all(8.0),
+//                           child: FloatingActionButton(
+//                             backgroundColor: Colors.pink,
+//                             onPressed: () {
+//                               updated(stateSetter);
+//                               name != null
+//                                   ? _peoples.add(name)
+//                                   : print('Null value');
+//                               print('Controller : $name');
+//                               Description != null ? _descriptions.add(Description) : print('Null value');
+//                             },
+//                             child: new Icon(Icons.add),
+//                           ),
+//                         ),
+//                         Row(
+//                           children: [
+//                             FlatButton(
+//                               onPressed: () async {
+//                                 _title.add(title.text);
+//                                 _peoples.add(name);
+//                                 _descriptions.add(Description);
+//                                 print('Controller : $name, $Description');
+//                                 total.add(_peoples.toString());
+//                                 totaldescription.add(_descriptions.toString());
+//                                 print('Total : ${total.toString()}');
+//
+//                                 await _firestore.collection('APC-VOTING').add({
+//                                   'HEADING': title.text,
+//                                   'PEOPLES': _peoples,
+//                                   'DESCRIPTION' : _descriptions,
+//                                 }).then((value) async {
+//                                   for (var i in _peoples)
+//                                     await _firestore
+//                                         .collection('APC-VOTING')
+//                                         .doc(value.id)
+//                                         .update({
+//                                       _peoples[_peoples.indexOf(i)]: 0,
+//                                     });
+//                                 });
+//                                 _peoples.clear();
+//                                 people.clear();
+//                                 title.clear();
+//                                 _descriptions.clear();
+//                                 setState(() {
+//                                   name = null;
+//                                   Description =null;
+//                                   result = false;
+//                                 });
+//                                 Navigator.of(context).pop();
+//                               },
+//                               child: Text('Submit'),
+//                             ),
+//                             FlatButton(
+//                               onPressed: () {
+//                                 // _peoples.clear();
+//                                 // people.clear();
+//                                 title.clear();
+//
+//                                 setState(() {
+//                                   name = null;
+//                                 });
+//                                 Navigator.of(context).pop();
+//                               },
+//                               child: Text('Cancel'),
+//                             ),
+//                           ],
+//                         )
+//                       ],
+//                     ),
+//                   );
+//                 }),
+//           );
+//         });
+//   }
+//
+//   Future updated(StateSetter updateState) {
+//     updateState(() {
+//       people.add(Expanded(
+//         child: Column(
+//           children: [
+//             Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: new TextFormField(
+//                 onChanged: (val) {
+//                   setState(() {
+//                     name = val;
+//                   });
+//                 },
+//                 decoration: InputDecoration(
+//                     border: OutlineInputBorder(
+//                         borderRadius: BorderRadius.circular(12.0)),
+//                     hintText: '(${people.length + 1}) Candidate Name'),
+//               ),
+//             ),
+//             Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: new TextFormField(
+//                 onChanged: (val) {
+//                   setState(() {
+//                     Description = val;
+//                   });
+//                 },
+//                 decoration: InputDecoration(
+//                     border: OutlineInputBorder(
+//                         borderRadius: BorderRadius.circular(12.0)),
+//                     hintText: 'Description'),
+//               ),
+//             ),
+//           ],
+//         )
+//       ));
+//       setState(() {});
+//     });
+//   }
+//
+//   deleted(StateSetter updateState, index) {
+//     updateState(() {
+//       people.removeAt(index);
+//     });
+//   }
+//   ChooseImage() async {
+//     final pickedFile = await picker.getImage(source: ImageSource.gallery);
+//     setState(() {
+//       _image.add(File((pickedFile?.path)));
+//     });
+//     if(pickedFile.path == null ) retrieveLostData();
+//   }
+//
+//   Future <void> retrieveLostData() async {
+//     final LostData response = await picker.getLostData();
+//     if (response.isEmpty) {
+//       return;
+//     }
+//     if ( response.file != null){
+//       setState(() {
+//         _image.add(File(response.file.path));
+//       });
+//     }
+//     else
+//       {
+//         print(response.file);
+//       }
+//   }
+//  }
 
-
+import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:webapp/result.dart';
 import 'package:webapp/user_management.dart';
-final _firestore = Firestore.instance;
+import 'package:firebase/firebase.dart' as fb;
+final _firestore = FirebaseFirestore.instance;
+Uri uri;
 class AdminPage1 extends StatefulWidget {
   @override
   _AdminPage1State createState() => _AdminPage1State();
@@ -434,68 +779,111 @@ class AdminPage1 extends StatefulWidget {
 
 class _AdminPage1State extends State<AdminPage1> {
   List<String> _peoples = List();
+  List image = List();
   List<Widget> people = List();
   List<String> total = List();
+  List<String> totaldescription = List();
   List<String> _title = List();
+  List<String> _descriptions = List();
+  List<Widget> description = List();
+  bool result = true;
   var item;
+  Uri uri;
+  var descriptionItems;
   TextEditingController title = TextEditingController();
   String name;
+  String descriptions;
+
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          backgroundColor: Colors.grey[200],
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.pink,
+        backgroundColor: Colors.grey[200],
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.pink,
+          onPressed: () {
+            onpressed();
+          },
+          child: Icon(Icons.add),
+        ),
+        body: result
+            ? Center(
+          child: FlatButton(
+            color: Colors.pink,
             onPressed: () {
-              onpressed();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Result(),
+                ),
+              );
             },
-            child: Icon(Icons.add),
+            child: Text('View Result'),
           ),
-          body: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-              ),
-              itemCount: total.length,
-              itemBuilder: (context, index) {
-                print('Total : $item');
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),color:  Color(0xFFFDF5E6),
+        )
+            : GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+            ),
+            itemCount: _title.length,
+            itemBuilder: (context, index) {
+              print('Total : $item');
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Color(0xFFFDF5E6),
                   ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Text(_title[index],
-                              style: Theme.of(context).textTheme.headline6),
-                        ),
-                        for (item in total[index]
-                            .replaceAll('[', '').replaceAll('[', '')
-                            .replaceAll(']', '').replaceAll('[', '')
-                            .replaceAll(']', '')
-                            .split(','))
-                          Padding(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(_title[index],
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .headline6),
+                      ),
+                      for (var item in total[index]
+                          .replaceAll('[', '')
+                          .replaceAll(']', '')
+                          .split(',')
+                          .asMap()
+                          .entries)
+                        Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
                                 Text(
-                                  item,
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  '${item.value}',
+                                  style:
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .subtitle,
+                                ),
+                                Text(
+                                  "  ${totaldescription[index].replaceAll(
+                                      '[', '').replaceAll(']', '').replaceAll(
+                                      ']', '').replaceAll(']', '').split(
+                                      ',')[item.key]}",
+                                  style:
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyText2,
                                 ),
                               ],
-                            )
-
-
-                          ),
-                      ],
-                    ),
+                            )),
+                    ],
                   ),
-                );
-              })),
+                ),
+              );
+            }),
+      ),
     );
   }
 
@@ -506,7 +894,6 @@ class _AdminPage1State extends State<AdminPage1> {
         backgroundColor: Colors.transparent,
         builder: (context) {
           return Container(
-            height: MediaQuery.of(context).size.height * 0.80,
             decoration: new BoxDecoration(
               color: Colors.white,
               borderRadius: new BorderRadius.only(
@@ -559,7 +946,14 @@ class _AdminPage1State extends State<AdminPage1> {
                                       ),
                                       onPressed: () {
                                         deleted(stateSetter, index);
-                                      })
+                                      }),
+                                  IconButton(
+                                    icon: Icon(Icons.image),
+                                    onPressed: () {
+                                      name == null? print('Null Name'):
+                                     uploadToStorage(fileName: name);
+                                    },
+                                  )
                                 ],
                               );
                             },
@@ -576,6 +970,13 @@ class _AdminPage1State extends State<AdminPage1> {
                                   ? _peoples.add(name)
                                   : print('Null value');
                               print('Controller : $name');
+                              descriptions != null
+                                  ? _descriptions.add(descriptions)
+                                  : print('Null value');
+                              setState(() {
+                                name = null;
+                                print(image.length);
+                              });
                             },
                             child: new Icon(Icons.add),
                           ),
@@ -583,31 +984,50 @@ class _AdminPage1State extends State<AdminPage1> {
                         Row(
                           children: [
                             FlatButton(
-                              onPressed: () async{
+                              onPressed: () async {
                                 _title.add(title.text);
                                 _peoples.add(name);
-                                print('Controller : $name');
+                                _descriptions.add(descriptions);
+                                print('Controller : $name, $descriptions');
                                 total.add(_peoples.toString());
-                                print('Total : ${total.toString()}');
+                                totaldescription.add(_descriptions.toString());
+                                print('Total : ${totaldescription.toString()}');
+
+                                await _firestore.collection('APC-VOTING').add({
+                                  'HEADING': title.text,
+                                  'PEOPLES': _peoples,
+                                  'DESCRIPTION': _descriptions,
+                                  "images" : image,
+                                }).then((value) async {
+                                  for (var i in _peoples)
+                                    await _firestore
+                                        .collection('APC-VOTING')
+                                        .doc(value.id)
+                                        .update({
+                                      _peoples[_peoples.indexOf(i)].toString(): 0,
+                                    });
+                                });
                                 _peoples.clear();
                                 people.clear();
+                                title.clear();
+                                _descriptions.clear();
+                                image.clear();
                                 setState(() {
                                   name = null;
+                                  descriptions = null;
+                                  result = false;
+                                  print(image);
                                 });
-                                await _firestore.collection('APC-VOTING').add({
-                                  'HEADING' : title.text,
-                                  'PEOPLES' : total,
-                                });
-                                title.clear();
                                 Navigator.of(context).pop();
                               },
                               child: Text('Submit'),
                             ),
                             FlatButton(
                               onPressed: () {
-                                _peoples.clear();
-                                people.clear();
+                                // _peoples.clear();
+                                // people.clear();
                                 title.clear();
+
                                 setState(() {
                                   name = null;
                                 });
@@ -627,27 +1047,41 @@ class _AdminPage1State extends State<AdminPage1> {
 
   Future updated(StateSetter updateState) {
     updateState(() {
-      TextEditingController controller = TextEditingController();
       people.add(Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: new TextFormField(
-            onChanged: (val) {
-              setState(() {
-                name = val;
-              });
-            },
-            autovalidate: true,
-            controller: controller,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-                hintText: '(${people.length + 1}) Subtitle'),
-          ),
-        ),
-      ));
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new TextFormField(
+                  onChanged: (val) {
+                    setState(() {
+                      name = val;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      hintText: '(${people.length + 1}) Candidate Name'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new TextFormField(
+                  onChanged: (val) {
+                    setState(() {
+                      descriptions = val;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      hintText: 'Description'),
+                ),
+              ),
+
+            ],
+          )));
       setState(() {});
-      // print('Controller : ${controller.text}');
     });
   }
 
@@ -656,4 +1090,51 @@ class _AdminPage1State extends State<AdminPage1> {
       people.removeAt(index);
     });
   }
+
+
+  void uploadImage({@required Function(File file) onSelected}) {
+    InputElement uploadInput = FileUploadInputElement();
+    uploadInput.click();
+
+    uploadInput.onChange.listen((event) {
+      final file = uploadInput.files.first;
+      final reader = FileReader();
+      reader.readAsDataUrl(file);
+      reader.onLoadEnd.listen((event) {
+        onSelected(file);
+        showDialog(
+          context:context,
+          builder: (BuildContext context) {
+            return
+            AlertDialog(content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CircularProgressIndicator(),
+                  Text('Loading...')
+                ]
+            ),);
+
+          }
+        );
+      });
+    });
+  }
+
+  void uploadToStorage({fileName}) {
+    final path = 'CandiDate/$fileName';
+    uploadImage(onSelected: (file) {
+      fb
+          .storage()
+          .refFromURL('gs://fir-app-54cb1.appspot.com/')
+          .child(path)
+          .put(file)
+          .future
+          .then((data) async {
+        Uri uri = await data.ref.getDownloadURL();
+        image.add(uri.toString());
+        Navigator.pop(context);
+      });
+    });
+  }
 }
+

@@ -1,68 +1,35 @@
+
 import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:webapp/User.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
-    show CalendarCarousel;
+
 import 'admin_page.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:webapp/user_management.dart';
-
 ConfirmationResult confirmationResult;
-AnimationController _controller;
-Animation<double> _animation;
-String email;
-String password;
-var DocId;
+final TextEditingController nameController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
 final auth = FirebaseAuth.instance;
-
-class LoginPage extends StatefulWidget {
+class AdminCreatePage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _AdminCreatePageState createState() => _AdminCreatePageState();
 }
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
-  final referenceDataBase = FirebaseDatabase.instance;
-  var scaffoldkey = GlobalKey<ScaffoldState>();
+class _AdminCreatePageState extends State<AdminCreatePage> {
   var formkey = GlobalKey<FormState>();
   var passwordkey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.fastLinearToSlowEaseIn,
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
+  String email;
+  String password;
   bool showSpinner = false;
-  var dobController = new MaskedTextController(mask: '00/00/0000');
-  var studentIdController = MaskedTextController(mask: '00000');
   @override
   Widget build(BuildContext context) {
-    final ref = referenceDataBase.reference();
     Size size = MediaQuery.of(context).size;
     return ModalProgressHUD(
-      inAsyncCall: showSpinner,
+      inAsyncCall:  showSpinner,
       child: Scaffold(
-        key: scaffoldkey,
         appBar: AppBar(
           title: Text('APC COLLEGE VOTING'),
         ),
@@ -70,23 +37,26 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  child: Image.asset(
-                    "assets/images/apc.jpg",
-
-                  ),
+                Image.asset(
+                  "assets/images/apc.jpg",
+                  width: size.width,
+                  height: size.height,
                 ),
                 SizedBox(
                   height: 5,
                 ),
                 Text(
-                  'Powered By ',
+                  'Powered By Digisailor',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
                       color: Colors.black),
                 ),
-                digiimage(),
+                Text(' Create Admin ID',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.black),),
                 Center(
                   child: Container(
                     decoration: BoxDecoration(
@@ -103,16 +73,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               padding: const EdgeInsets.all(30.0),
                               child: TextFormField(
                                 validator: (String value) {
-                                  if (value.length < 4)
-                                    return " Enter at 4 character from your student ID";
+                                  if (value.length < 5)
+                                    return " Enter at least 8 character from your email";
                                   else
                                     return null;
                                 },
-                                controller: studentIdController,
+                                controller: nameController,
                                 onChanged: (value) {
                                   email = value;
                                 },
-                                keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
@@ -124,10 +94,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                         Radius.circular(32),
                                       ),
                                     ),
-                                    labelText: "Student ID",
-                                    labelStyle: TextStyle(
-                                      color: Color(0xFF87837e),
-                                    ),
+                                    hintText: "Email ID",
                                     hintStyle: TextStyle(
                                       color: Color(0xFF87837e),
                                     ),
@@ -138,23 +105,42 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
+                          // MaterialButton(
+                          //   onPressed: () async{
+                          //     print(phone);
+                          //     FirebaseAuth auth = FirebaseAuth.instance;
+                          //     confirmationResult =
+                          //         await auth.signInWithPhoneNumber(phone,
+                          //             RecaptchaVerifier(
+                          //               container: 'recaptcha',
+                          //               size: RecaptchaVerifierSize.compact,
+                          //               theme: RecaptchaVerifierTheme.dark,
+                          //             )
+                          //         );
+                          //   },
+                          //   child: Text(
+                          //     'Generate OTP',
+                          //     style: TextStyle(
+                          //         fontSize: 20,
+                          //         fontWeight: FontWeight.bold,
+                          //         color: Colors.pink),
+                          //   ),
+                          // ),
                           SizedBox(
                             height: 10,
                           ),
                           Form(
                             key: passwordkey,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 50),
+                              padding: const EdgeInsets.symmetric(horizontal: 50),
                               child: TextFormField(
-                                obscureText: false,
                                 validator: (String value) {
                                   if (value.length < 5)
-                                    return " enter your DOB (month/date/last 2 digit of year)";
+                                    return " Enter at least 8 character from your email";
                                   else
                                     return null;
                                 },
-                                controller: dobController,
+                                controller: passwordController,
                                 onChanged: (value) {
                                   password = value;
                                 },
@@ -170,10 +156,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                         Radius.circular(32),
                                       ),
                                     ),
-                                    labelText: "  (mm/dd/yyyy)",
-                                    labelStyle: TextStyle(
-                                      color: Color(0xFF87837e),
-                                    ),
+                                    hintText: "Password",
                                     hintStyle: TextStyle(
                                       color: Color(0xFF87837e),
                                     ),
@@ -184,23 +167,38 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          SizedBox(height: 10,),
                           Material(
                             elevation: 5.0,
                             color: Colors.pink,
                             borderRadius: BorderRadius.circular(30.0),
                             child: MaterialButton(
-                              onPressed: () async {
-                                try {
-                                  authorizeAccess(context);
-                                  setState(() {
-                                    showSpinner = false;
+                              onPressed: () async{
+                                try{
+                                  await auth.createUserWithEmailAndPassword(email: email, password: password).then((SignedInUser) {
+                                    SignedInUser.user.email == 'admin@digisailor.com'|| SignedInUser.user.email == 'venkat@digisailor.com'? MaterialPageRoute(
+                                      builder: (context) =>
+                                          AdminPage1(),
+                                    ) :  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserPage(),
+                                      ),
+                                    );
+
                                   });
-                                } catch (e) {
+                                  setState(() {
+                                    showSpinner = true;
+                                  });
+                                }
+                                catch (e){
                                   print(e);
                                 }
+                                setState(() {
+                                  formkey.currentState.validate();
+                                  passwordkey.currentState.validate();
+                                });
                               },
                               child: Text(
                                 'LOGIN',
@@ -224,71 +222,4 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
   }
-
-  authorizeAccess(BuildContext context) {
-    Firestore.instance.collection('/mycollection').get().then((value) => print(value.size));
-    Firestore.instance
-        .collection('/mycollection')
-        .where('id', isEqualTo: email)
-        .getDocuments()
-        .then((docs) {
-      if (docs.documents[0].exists) {
-        if (docs.documents[0].get('DOB') == password) {
-          if (docs.documents[0].get('login_check') == '0') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserPage(),
-              ),
-            );
-          } else {
-            print('error');
-            var snackbar = SnackBar(
-                content:
-                    Text('your vote had been counted already sorry you cannot vote again'));
-            scaffoldkey.currentState.showSnackBar(snackbar);
-            setState(() {
-              formkey.currentState.validate();
-              passwordkey.currentState.validate();
-            });
-          }
-
-          print(snapshot.data.docs.length);
-          // print(docs.documents[0].id);
-          DocId = docs.documents[0].id;
-          print(DocId);
-        } else {
-          print('error');
-          var snackbar = SnackBar(
-              content: Text('please check Student ID and Date Of Birth'));
-          scaffoldkey.currentState.showSnackBar(snackbar);
-          setState(() {
-            formkey.currentState.validate();
-            passwordkey.currentState.validate();
-          });
-        }
-      }
-    });
-  }
-}
-
-Widget digiimage() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      Expanded(
-          child: ScaleTransition(
-        scale: _animation,
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: Container(
-            child: Image(
-              image: AssetImage('assets/images/digi.jpg'),
-              fit: BoxFit.cover,
-            ),height: 400,width: 400,
-          ),
-        ),
-      )),
-    ],
-  );
 }
